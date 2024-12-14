@@ -1,5 +1,5 @@
 $(document).ready(function ($) {
-    "use scroll";
+    "use strict";
 
 
     var book_table = new Swiper(".book-table-img-slider", {
