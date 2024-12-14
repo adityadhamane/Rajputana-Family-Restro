@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <!-- bootstrap  -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- custom css  -->
+    <link rel="stylesheet" href="style.css">
+    <!-- for icons  -->
+    <link rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+
+    <link rel="stylesheet" href="login.css">
+    <link rel="icon" type="image/x-icon" href="FR_favicon.ico">
+
+  </head>
+  <body>
+    <section class="h-100 gradient-form" style="background-color: #cf8585;">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-xl-10">
+            <div class="card rounded-3 text-black">
+              <div class="row g-0">
+                <div class="col-lg-6">
+                  <div class="card-body p-md-5 mx-md-4">
+
+                    <div class="text-center">
+                      <img src="logo.png"
+                        style="width: 185px;" alt="logo">
+                      <h4 class="mt-1 mb-5 pb-1">We are restaurant Team</h4>
+                    </div>
+
+                    <form>
+                      <p>Please login to your account</p>
+
+                      <form id="loginForm">
+                        <div class="mb-3">
+                          <label for="email" class="form-label">Email</label>
+                          <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-3">
+                          <label for="password" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        </div>
+                        
+                      </form>
+
+                      <div class="text-center pt-1 mb-5 pb-1">
+                        <button data-mdb-button-init data-mdb-ripple-init 
+                          class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" 
+                          type="submit" id="submitButton">Login</button>
+                        <a class="text-muted" href="registration.html">Forgot password?</a>
+                      </div>
+                      
+                      
+                      <script>
+
+                        document.getElementById('submitButton').addEventListener('click', function (event) {
+                          event.preventDefault(); // Prevent default form submission
+
+                          const email = document.getElementById('email').value.trim();
+                          const password = document.getElementById('password').value.trim();
+
+                          if (!email || !password) {
+                            alert('Please fill out both email and password fields.');
+                            return; // Stop further execution
+                          }
+
+                          const isLoginSuccessful = true; // Replace with backend validation
+
+                          if (isLoginSuccessful) {
+                            alert('Login Successful!');
+                            window.location.href = 'index.html'; 
+                          } else {
+                            alert('Login Failed! Please check your credentials.');
+                          }
+                        });
+
+
+                      </script>
+
+                      <div
+                        class="d-flex align-items-center justify-content-center pb-4">
+                        <p class="mb-0 me-2">Don't have an account?</p>
+
+                        <a href="registration.html" class="link-primary text-decoration-none">
+                          <button type="button" data-mdb-button-init data-mdb-ripple-init
+                          class="btn btn-outline-danger">Create new</button></a>
+                      </div>
+
+                    </form>
+
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                  <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                    <h4 class="mb-4">Foodies welcome here.</h4>
+                    <p>Once you try it, you will love it
+                      Fun. Fast. Tasty. Delicious
+                      Food that makes you happy.</p>
+                    <p class="small mb-0">Access the Resto platform by logging in to manage your restaurant services and food orders with fun.
+                      <br> A restaurant is an establishment that prepares and serves food and drinks to customers. 
+                    </p>
+                  </div>
+
+                </div>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- bootstrap -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+
+  </body>
+</html>

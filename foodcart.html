@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Order </title>
+    <link rel="stylesheet" href="index.html">
+    <link rel="stylesheet" href="foodcart.css">
+    <link rel="icon" type="image/x-icon" href="FR_favicon.ico">
+</head>
+<body>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-modal" onclick="toggleCartModal()"></button>
+        </div>
+        <div class="cart-modal-body" id="cartItemsContainer">
+            <p>Your cart is empty.</p>
+        </div>
+
+
+        <div class="cart-modal-footer">
+            <p>Total: <span id="cartTotal">0</span> Rs</p>
+            <button id="checkoutButton" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+    <br>
+
+
+    <!-- Payment Form (Initially Hidden) -->
+    <div id="paymentForm" class="payment-form" style="display: none;">
+        <div class="payment-form-header">
+            <h3>Payment Form</h3>
+            <button id="closePaymentForm" class="close-button" onclick="closePaymentForm()">×</button>
+        </div>
+        <form id="paymentFormFields" onsubmit="return validatePaymentForm()">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Enter your name" required minlength="3" maxlength="50"><br>
+
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter card number" required pattern="\d{16}" maxlength="16"><br>
+
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/\d{2}"><br>
+
+            <label for="userLocation">Address:</label>
+            <input type="text" id="userLocation" name="userLocation" placeholder="Enter your Address" required minlength="5" maxlength="100"><br>
+
+            <label for="cvv">CVV Number:</label>
+            <input type="password" id="cvv" name="cvv" placeholder="Enter CVV" required pattern="\d{3}" maxlength="3"><br>
+
+            <button type="submit">Pay Now</button>
+            <button type="button" onclick="cashOnDelivery()">Cash On Delivery</button>
+        </form>
+        
+    </div>
+
+    <div class="morebtn">
+        <a href="index.html"><button class="ombtn">Our Menu <hr> Add More Items in Your Cart </button></a>
+    </div>
+    
+    <style>
+        .morebtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px; /* Adjust as needed */
+        }
+        .morebtn .ombtn{
+            background: linear-gradient(135deg, #6be585, #38b6ff);
+            padding: 20px;
+            padding-left: 40px;
+            padding-right: 40px;
+            display: inline-block;
+        }
+        .ombtn:hover{
+            transform: scale(1.1);
+        }
+    </style>
+    
+
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function updateCart() {
+            const cartItemsContainer = document.getElementById("cartItemsContainer");
+            const cartTotalElement = document.getElementById("cartTotal");
+
+            cartItemsContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+                cartTotalElement.textContent = "0";
+                return;
+            }
+
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+
+                const cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                cartItem.innerHTML = `
+                    <div class="cart-item-details">
+                        <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px;">
+                        <p>${item.name}</p>
+                        <p>Price: Rs. ${item.price}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                        <p>Total: Rs. ${item.price * item.quantity}</p>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button onclick="changeQuantity('${item.name}', -1)">-</button>
+                        <button onclick="changeQuantity('${item.name}', 1)">+</button>
+                        <button onclick="removeFromCart('${item.name}')">Remove</button> <hr>
+                        <br>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            cartTotalElement.textContent = total;
+        }
+
+        function changeQuantity(dishName, increment) {
+            const item = cart.find(item => item.name === dishName);
+            if (item) {
+                item.quantity += increment;
+                if (item.quantity <= 0) {
+                    removeFromCart(dishName);
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCart();
+            }
+        }
+
+        function removeFromCart(dishName) {
+            cart = cart.filter(item => item.name !== dishName);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCart();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            // Show payment form
+            const paymentForm = document.getElementById("paymentForm");
+            paymentForm.style.display = "block";
+        }
+
+        function validatePaymentForm() {
+            const fullName = document.getElementById("fullName").value.trim();
+            const cardNumber = document.getElementById("cardNumber").value.trim();
+            const expiryDate = document.getElementById("expiryDate").value.trim();
+            const userLocation = document.getElementById("userLocation").value.trim();
+            const cvv = document.getElementById("cvv").value.trim();
+
+            if (fullName.length < 3 || fullName.length > 50) {
+                alert("Full Name must be between 3 and 50 characters.");
+                return false;
+            }
+
+            if (!/^\d{16}$/.test(cardNumber)) {
+                alert("Card Number must be exactly 16 digits.");
+                return false;
+            }
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+                alert("Expiry Date must be in MM/YY format.");
+                return false;
+            }
+
+            if (userLocation.length < 5 || userLocation.length > 100) {
+                alert("Address must be between 5 and 100 characters.");
+                return false;
+            }
+
+            if (!/^\d{3}$/.test(cvv)) {
+                alert("CVV must be exactly 3 digits.");
+                return false;
+            }
+
+            alert("Payment Successful!");
+            clearCart();
+            return true;
+        }
+
+        function cashOnDelivery() {
+            alert("Your order has been placed on your registred address! Payment will be made on delivery.");
+            clearCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+            localStorage.setItem("cart", JSON.stringify(cart));
+            const paymentForm = document.getElementById("paymentForm");
+            paymentForm.style.display = "none";
+        }
+
+        function closePaymentForm() {
+            const paymentForm = document.getElementById("paymentForm");
+            paymentForm.style.display = "none";
+        }
+
+        // Initialize the cart on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCart();
+        });
+    </script>
+</body>
+</html>
